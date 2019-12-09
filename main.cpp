@@ -74,11 +74,14 @@ class Population {
     int n;
     float p;
     int step;
+
   public:
+    // Default Constructor
     Population(int nPeople) {
       n = nPeople;
       p = 0.0;
       step = 0;
+      // Build vector of People, length n
       for (int i = 0; i < n; i++) {
         people.push_back(Person());
       }
@@ -89,6 +92,7 @@ class Population {
       n = nPeople;
       p = probabilityOfInfection;
       step = 0;
+      // Build vector of People, length n
       for (int i = 0; i < n; i++) {
         people.push_back(Person());
       }
@@ -114,7 +118,6 @@ class Population {
 
     void random_infection() {
       // pick a random number between 0 and n
-      srand (time(NULL));
       int ind = rand() % n;
       cout << "random choice: " << ind << endl;
       people[ind].infect(5);
@@ -159,7 +162,7 @@ class Population {
 };
 
 int main() {
-  srand (time(NULL));
+  srand(time(NULL));
   ofstream outputFile;
   // Person joe;
   // int step = 1;
@@ -186,17 +189,15 @@ int main() {
 
   // output sick population timeseries
   outputFile.open("output.txt");
-  for (float p = .2; p < 1; p = p +.2) {
+  for (float p = .1; p < 1; p = p +.4) {
     Population pop(1000);
     pop.set_probability_of_transfer(p);
     pop.random_infection();
-    //pop.vaccinate_randomly(4);
     while (pop.count_infected() != 0) {
       outputFile << pop.count_infected() << " ";
-      //pop.status_string();
       pop.update();
     }
-    outputFile << endl;
+    outputFile << pop.count_infected() << endl;
   }
 
   outputFile.close();
@@ -204,17 +205,16 @@ int main() {
 
   // output sick population timeseries
   outputFile.open("outputWithVaccination.txt");
-  for (int v = 0; v < 100; v = v + 20) {
-    Population pop(1000);
-    pop.set_probability_of_transfer(.5);
-    pop.random_infection();
-    pop.vaccinate_randomly(v);
-    while (pop.count_infected() != 0) {
-      outputFile << pop.count_infected() << " ";
-      //pop.status_string();
-      pop.update();
+  for (int v = 0; v <= 200; v = v + 50) {
+    Population pop2(1000);
+    pop2.set_probability_of_transfer(.5);
+    pop2.random_infection();
+    pop2.vaccinate_randomly(v);
+    while (pop2.count_infected() != 0) {
+      outputFile << pop2.count_infected() << " ";
+      pop2.update();
     }
-    outputFile << endl;
+    outputFile << pop2.count_infected() << endl;
   }
   
   outputFile.close();
